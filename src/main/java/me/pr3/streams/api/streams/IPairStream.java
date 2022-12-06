@@ -63,7 +63,7 @@ public interface IPairStream<T, U> {
 
     Optional<Pair<T, U>> reduce(BiFunction<T, T, T> tAccumulator, BiFunction<U, U, U> uAccumulator);
 
-    <R> R collect(Supplier<R> supplier, BiConsumer<R, ? super T> accumulator, BiConsumer<R, R> combiner);
+    <R> R collect(Supplier<R> supplier, BiConsumer<R, ? super T> aAccumulator, BiConsumer<R, ? super U> uAccumulator);
 
     <R, A> R collect(Collector<? super T, A, R> collector);
 

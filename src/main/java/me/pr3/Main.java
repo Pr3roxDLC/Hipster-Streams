@@ -2,12 +2,13 @@ package me.pr3;
 
 import me.pr3.streams.api.streams.ISingleStream;
 
+import java.util.ArrayList;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args) {
-        ISingleStream.of("aaa", "bbb", "ccc")
+        System.out.println((Object)ISingleStream.of("aaa", "bbb", "ccc")
                 .map(String::toUpperCase)
                 .mapToPair(Function.identity(), String::length)
                 .mapSeparate(
@@ -18,7 +19,7 @@ public class Main {
                         (a,b) -> a.concat(b.toString()),
                         (a,b) -> b * a.length()
                 )
-                .forEach((a,b) -> System.out.println(a + b));
+                .collect(ArrayList::new, ArrayList::add, (list, r) -> list.add(r.toString())));
     }
 
 }

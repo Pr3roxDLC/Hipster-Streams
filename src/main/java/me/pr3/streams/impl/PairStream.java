@@ -162,8 +162,13 @@ public class PairStream<T, U> implements IPairStream<T, U> {
     }
 
     @Override
-    public <R> R collect(Supplier<R> supplier, BiConsumer<R, ? super T> accumulator, BiConsumer<R, R> combiner) {
-        throw new RuntimeException("Not Implemented Yet");
+    public <R> R collect(Supplier<R> supplier, BiConsumer<R, ? super T> aAccumulator, BiConsumer<R, ? super U> uAccumulator) {
+        R container = supplier.get();
+        for (Pair<T, U> pair : pairStream.toList()) {
+            aAccumulator.accept(container, pair.left);
+            uAccumulator.accept(container, pair.right);
+        }
+        return container;
     }
 
     @Override
