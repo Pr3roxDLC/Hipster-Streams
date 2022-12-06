@@ -6,7 +6,6 @@ import me.pr3.streams.api.functions.bi.BiToLongFunction;
 import me.pr3.streams.api.tupels.OptionalPair;
 import me.pr3.streams.api.tupels.Pair;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.*;
@@ -15,10 +14,12 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
-public interface IPairStream <T, U>{
+public interface IPairStream<T, U> {
     IPairStream<T, U> filter(BiPredicate<? super T, ? super U> predicate);
 
-    <A, B> IPairStream<A, U> map(Function<? super T, ? extends A> mapperA, Function<? super U, ? extends B> mapperB);
+    <A, B> IPairStream<A, B> mapSeparate(Function<? super T, ? extends A> mapperA, Function<? super U, ? extends B> mapperB);
+
+    <A, B> IPairStream<A, B> mapTogether(BiFunction<? super T, ? super U, A> aBiFunction, BiFunction<? super T, ? super U, B> bBiFunction);
 
     <A> ISingleStream<A> mapToSingle(BiFunction<T, U, A> biFunction);
 
@@ -28,7 +29,7 @@ public interface IPairStream <T, U>{
 
     DoubleStream mapToDouble(BiToDoubleFunction<? super T, ? super U> mapper);
 
-    <A,B> IPairStream<A, B> flatMap(BiFunction<? super T, ? super U, ? extends IPairStream<? extends A, ? extends B>> mapper);
+    <A, B> IPairStream<A, B> flatMap(BiFunction<? super T, ? super U, ? extends IPairStream<? extends A, ? extends B>> mapper);
 
     IntStream flatMapToInt(BiFunction<? super T, ? super U, ? extends IntStream> mapper);
 
@@ -53,22 +54,22 @@ public interface IPairStream <T, U>{
 
     void forEachOrdered(BiConsumer<? super T, ? super U> action);
 
-    Pair<T,U>[] toArray();
+    Pair<T, U>[] toArray();
 
     <A> A[] toArray(IntFunction<A[]> generator);
 
     //TODO rethink this, there should be a better way to handle this?
-    Pair<T, U> reduce(T identity1, U identity2, BiFunction<T, U, Pair<T,U>> accumulator);
+    Pair<T, U> reduce(T identity1, U identity2, BiFunction<T, U, Pair<T, U>> accumulator);
 
-    Optional<Pair<T,U>> reduce(BiFunction<T, U, Pair<T,U>> accumulator);
+    Optional<Pair<T, U>> reduce(BiFunction<T, U, Pair<T, U>> accumulator);
 
     <R> R collect(Supplier<R> supplier, BiConsumer<R, ? super T> accumulator, BiConsumer<R, R> combiner);
 
     <R, A> R collect(Collector<? super T, A, R> collector);
 
     @SuppressWarnings("unchecked")
-    default List<Pair<T,U>> toList() {
-        return (List<Pair<T,U>>) List.of(this.toArray());
+    default List<Pair<T, U>> toList() {
+        return (List<Pair<T, U>>) List.of(this.toArray());
     }
 
     //TODO firgure out what the best way to implement this is
