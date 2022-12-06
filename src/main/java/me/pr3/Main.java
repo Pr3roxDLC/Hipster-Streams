@@ -15,6 +15,7 @@ public class Main {
                         a -> a.concat("Hello World"),
                         b -> b + 10
                 )
+
                 .mapTogether(
                         (a,b) -> a.concat(b.toString()),
                         (a,b) -> b * a.length()
