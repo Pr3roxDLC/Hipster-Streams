@@ -2,6 +2,7 @@ package me.pr3.streams.impl;
 
 import me.pr3.streams.api.streams.IPairStream;
 import me.pr3.streams.api.streams.ISingleStream;
+import org.apache.commons.collections4.ListUtils;
 
 import java.util.*;
 import java.util.function.*;
@@ -173,6 +174,13 @@ public class SingleStream<T> implements ISingleStream<T> {
     @Override
     public Optional<T> findAny() {
         return stream.findAny();
+    }
+
+    @Override
+    public ISingleStream<List<T>> partition(int size) {
+        List<T> list = stream.toList();
+        List<List<T>> collections = ListUtils.partition(list, size);
+        return new SingleStream<>(collections);
     }
 
     public SingleStream(T[] data){

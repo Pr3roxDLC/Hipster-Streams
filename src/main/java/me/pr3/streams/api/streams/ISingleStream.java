@@ -75,8 +75,10 @@ public interface ISingleStream<T>{
     Optional<T> findAny();
 
     @SafeVarargs
-    public static<T> ISingleStream<T> of(T... values) {
+    static<T> ISingleStream<T> of(T... values) {
         return new me.pr3.streams.impl.SingleStream<>(values);
     }
+
+    ISingleStream<List<T>> partition(int size);
 
 }

@@ -6,6 +6,7 @@ import me.pr3.streams.api.functions.bi.BiToLongFunction;
 import me.pr3.streams.impl.tupels.OptionalPair;
 import me.pr3.streams.impl.tupels.Pair;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.*;
@@ -88,4 +89,8 @@ public interface IPairStream<T, U> {
     OptionalPair<T, U> findFirst();
 
     OptionalPair<T, U> findAny();
+
+    IPairStream<List<T>, List<U>> partition(int size);
+
+
 }

@@ -8,6 +8,7 @@ import me.pr3.streams.api.streams.IPairStream;
 import me.pr3.streams.api.streams.ISingleStream;
 import me.pr3.streams.impl.tupels.OptionalPair;
 import me.pr3.streams.impl.tupels.Pair;
+import org.apache.commons.collections4.ListUtils;
 
 import java.util.*;
 import java.util.function.*;
@@ -205,6 +206,20 @@ public class PairStream<T, U> implements IPairStream<T, U> {
     public OptionalPair<T, U> findAny() {
         return pairStream.findAny().map(tuPair -> new OptionalPair<>(tuPair.left, tuPair.right)).orElseGet(OptionalPair::empty);
     }
+
+    @Override
+    public IPairStream<List<T>, List<U>> partition(int size) {
+        List<T> tList = new ArrayList<>();
+        List<U> uList = new ArrayList<>();
+        pairStream.forEach(p -> {
+            tList.add(p.left);
+            uList.add(p.right);
+        });
+        List<List<T>> tLists = ListUtils.partition(tList, size);
+        List<List<U>> uLists = ListUtils.partition(uList, size);
+        return new PairStream<>(tLists, uLists);
+    }
+
 
     public PairStream(T[] tData, U[] uData) {
         Pair<T, U>[] pairs = new Pair[max(tData.length, uData.length)];
