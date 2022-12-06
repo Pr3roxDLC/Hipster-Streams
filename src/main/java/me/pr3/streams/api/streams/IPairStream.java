@@ -20,6 +20,8 @@ public interface IPairStream <T, U>{
 
     <A, B> IPairStream<A, U> map(Function<? super T, ? extends A> mapperA, Function<? super U, ? extends B> mapperB);
 
+    <A> ISingleStream<A> mapToSingle(BiFunction<T, U, A> biFunction);
+
     IntStream mapToInt(BiToIntFunction<? super T, ? super U> mapper);
 
     LongStream mapToLong(BiToLongFunction<? super T, ? super U> mapper);

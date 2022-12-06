@@ -9,6 +9,8 @@ public interface ISingleStream <T>{
 
     <R> ISingleStream<R> map(Function<? super T, ? extends R> mapper);
 
+    <A, B> IPairStream<A,B> mapToPair(Function<? super T, A> aFunction, Function<? super T, B> bFunction);
+
     IntStream mapToInt(ToIntFunction<? super T> mapper);
 
     LongStream mapToLong(ToLongFunction<? super T> mapper);
