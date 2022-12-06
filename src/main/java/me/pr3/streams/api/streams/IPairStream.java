@@ -1,5 +1,6 @@
 package me.pr3.streams.api.streams;
 
+import me.pr3.streams.api.functions.bi.BiComparator;
 import me.pr3.streams.api.functions.bi.BiToDoubleFunction;
 import me.pr3.streams.api.functions.bi.BiToIntFunction;
 import me.pr3.streams.api.functions.bi.BiToLongFunction;
@@ -7,6 +8,7 @@ import me.pr3.streams.impl.tupels.OptionalPair;
 import me.pr3.streams.impl.tupels.Pair;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.*;
@@ -73,10 +75,9 @@ public interface IPairStream<T, U> {
         return (List<Pair<T, U>>) List.of(this.toArray());
     }
 
-    //TODO figure out what the best way to implement this is
-//    Optional<T> min(Comparator<? super T> comparator);
-//
-//    Optional<T> max(Comparator<? super T> comparator);
+    OptionalPair<T, U> min(BiComparator<? super T, ? super U> comparator);
+
+    OptionalPair<T, U> max(BiComparator<? super T, ? super U> comparator);
 
     long count();
 

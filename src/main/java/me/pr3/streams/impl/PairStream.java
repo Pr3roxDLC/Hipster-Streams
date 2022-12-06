@@ -1,6 +1,7 @@
 package me.pr3.streams.impl;
 
 import jdk.jshell.spi.ExecutionControl;
+import me.pr3.streams.api.functions.bi.BiComparator;
 import me.pr3.streams.api.functions.bi.BiToDoubleFunction;
 import me.pr3.streams.api.functions.bi.BiToIntFunction;
 import me.pr3.streams.api.functions.bi.BiToLongFunction;
@@ -178,6 +179,32 @@ public class PairStream<T, U> implements IPairStream<T, U> {
     }
 
     @Override
+    public OptionalPair<T, U> min(BiComparator<? super T, ? super U> comparator) {
+        List<Pair<T,U>> pairs = pairStream.toList();
+        if(pairs.isEmpty())return OptionalPair.empty();
+        Pair<T,U> min = pairs.get(0);
+        for (Pair<T, U> p : pairs) {
+            if (comparator.compare(min.left, p.left, min.right, p.right) < 0) {
+                min = p;
+            }
+        }
+        return OptionalPair.of(min.left, min.right);
+    }
+
+    @Override
+    public OptionalPair<T, U> max(BiComparator<? super T, ? super U> comparator) {
+        List<Pair<T,U>> pairs = pairStream.toList();
+        if(pairs.isEmpty())return OptionalPair.empty();
+        Pair<T,U> max = pairs.get(0);
+        for (Pair<T, U> p : pairs) {
+            if (comparator.compare(max.left, p.left, max.right, p.right) > 0) {
+                max = p;
+            }
+        }
+        return OptionalPair.of(max.left, max.right);
+    }
+
+    @Override
     public long count() {
         return pairStream.count();
     }
@@ -222,16 +249,16 @@ public class PairStream<T, U> implements IPairStream<T, U> {
 
 
     public PairStream(T[] tData, U[] uData) {
-        Pair<T, U>[] pairs = new Pair[max(tData.length, uData.length)];
-        for (int i = 0; i < max(tData.length, uData.length); i++) {
+        Pair<T, U>[] pairs = new Pair[Math.max(tData.length, uData.length)];
+        for (int i = 0; i < Math.max(tData.length, uData.length); i++) {
             pairs[i] = new Pair<>(tData[i], uData[i]);
         }
         this.pairStream = Arrays.stream(pairs);
     }
 
     public PairStream(List<T> tList, List<U> uList) {
-        Pair<T, U>[] pairs = new Pair[max(tList.size(), uList.size())];
-        for (int i = 0; i < max(tList.size(), uList.size()); i++) {
+        Pair<T, U>[] pairs = new Pair[Math.max(tList.size(), uList.size())];
+        for (int i = 0; i < Math.max(tList.size(), uList.size()); i++) {
             pairs[i] = new Pair<>(tList.get(i), uList.get(i));
         }
         this.pairStream = Arrays.stream(pairs);
