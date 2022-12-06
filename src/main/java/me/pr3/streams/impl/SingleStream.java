@@ -182,4 +182,8 @@ public class SingleStream<T> implements ISingleStream<T> {
     private SingleStream(Stream<T> stream){
         this.stream = stream;
     }
+
+    public SingleStream(List<T> tList){
+        this.stream = tList.stream();
+    }
 }

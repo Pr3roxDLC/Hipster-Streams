@@ -1,5 +1,6 @@
 package me.pr3.streams.impl;
 
+import jdk.jshell.spi.ExecutionControl;
 import me.pr3.streams.api.functions.bi.BiToDoubleFunction;
 import me.pr3.streams.api.functions.bi.BiToIntFunction;
 import me.pr3.streams.api.functions.bi.BiToLongFunction;
@@ -8,10 +9,7 @@ import me.pr3.streams.api.streams.ISingleStream;
 import me.pr3.streams.impl.tupels.OptionalPair;
 import me.pr3.streams.impl.tupels.Pair;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
 
@@ -19,170 +17,208 @@ import static java.lang.Math.max;
 
 public class PairStream<T, U> implements IPairStream<T, U> {
     private Stream<Pair<T, U>> pairStream;
+
+
     @Override
     public IPairStream<T, U> filter(BiPredicate<? super T, ? super U> predicate) {
-        return null;
+        return new PairStream<>(pairStream.filter(p -> predicate.test(p.left, p.right)));
     }
 
     @Override
     public <A, B> IPairStream<A, B> mapSeparate(Function<? super T, ? extends A> mapperA, Function<? super U, ? extends B> mapperB) {
-        return null;
+        List<A> aList = new ArrayList<>();
+        List<B> bList = new ArrayList<>();
+        pairStream.forEach(p -> {
+            aList.add(mapperA.apply(p.left));
+            bList.add(mapperB.apply(p.right));
+        });
+        return new PairStream<>(aList, bList);
     }
 
     @Override
     public <A, B> IPairStream<A, B> mapTogether(BiFunction<? super T, ? super U, A> aBiFunction, BiFunction<? super T, ? super U, B> bBiFunction) {
-        return null;
+        List<A> aList = new ArrayList<>();
+        List<B> bList = new ArrayList<>();
+        pairStream.forEach(p -> {
+            aList.add(aBiFunction.apply(p.left, p.right));
+            bList.add(bBiFunction.apply(p.left, p.right));
+        });
+        return new PairStream<>(aList, bList);
     }
 
     @Override
     public <A> ISingleStream<A> mapToSingle(BiFunction<T, U, A> biFunction) {
-        return null;
+        return new SingleStream<>(pairStream.map(p -> biFunction.apply(p.left, p.right)).collect(Collectors.toList()));
     }
 
     @Override
     public IntStream mapToInt(BiToIntFunction<? super T, ? super U> mapper) {
-        return null;
+        return pairStream.mapToInt(p -> mapper.applyAsInt(p.left, p.right));
     }
 
     @Override
     public LongStream mapToLong(BiToLongFunction<? super T, ? super U> mapper) {
-        return null;
+        return pairStream.mapToLong(p -> mapper.applyAsLong(p.left, p.right));
     }
 
     @Override
     public DoubleStream mapToDouble(BiToDoubleFunction<? super T, ? super U> mapper) {
-        return null;
+        return pairStream.mapToDouble(p -> mapper.applyAsDouble(p.left, p.right));
     }
 
     @Override
     public <A, B> IPairStream<A, B> flatMap(BiFunction<? super T, ? super U, ? extends IPairStream<? extends A, ? extends B>> mapper) {
-        return null;
+        throw new RuntimeException("Not Implemented");
     }
 
     @Override
     public IntStream flatMapToInt(BiFunction<? super T, ? super U, ? extends IntStream> mapper) {
-        return null;
+        return pairStream.flatMapToInt(p -> mapper.apply(p.left, p.right));
     }
 
     @Override
     public LongStream flatMapToLong(BiFunction<? super T, ? super U, ? extends LongStream> mapper) {
-        return null;
+        return pairStream.flatMapToLong(p -> mapper.apply(p.left, p.right));
     }
 
     @Override
     public DoubleStream flatMapToDouble(BiFunction<? super T, ? super U, ? extends DoubleStream> mapper) {
-        return null;
+        return pairStream.flatMapToDouble(p -> mapper.apply(p.left, p.right));
     }
 
     @Override
     public IPairStream<T, U> distinct() {
-        return null;
+        return new PairStream<>(pairStream.distinct());
     }
 
     @Override
     public IPairStream<T, U> sorted() {
-        return null;
+        return new PairStream<>(pairStream.sorted());
     }
 
     @Override
     public IPairStream<T, U> peek(BiConsumer<? super T, ? super U> action) {
-        return null;
+        return new PairStream<>(pairStream.peek(p -> action.accept(p.left, p.right)));
     }
 
     @Override
     public IPairStream<T, U> limit(long maxSize) {
-        return null;
+        return new PairStream<>(pairStream.limit(maxSize));
     }
 
     @Override
     public IPairStream<T, U> skip(long n) {
-        return null;
+        return new PairStream<>(pairStream.skip(n));
     }
 
     @Override
     public void forEach(BiConsumer<? super T, ? super U> action) {
-
+        pairStream.forEach(p -> action.accept(p.left, p.right));
     }
 
     @Override
     public void forEachOrdered(BiConsumer<? super T, ? super U> action) {
-
+        pairStream.forEachOrdered(p -> action.accept(p.left, p.right));
     }
 
     @Override
     public Pair<T, U>[] toArray() {
-        return new Pair[0];
+        return (Pair<T, U>[]) pairStream.toArray();
     }
 
     @Override
     public <A> A[] toArray(IntFunction<A[]> generator) {
-        return null;
+        return pairStream.toArray(generator);
     }
 
     @Override
-    public Pair<T, U> reduce(T identity1, U identity2, BiFunction<T, U, Pair<T, U>> accumulator) {
-        return null;
+    public Pair<T, U> reduce(T identity1, U identity2, BiFunction<T, T, T> tAccumulator, BiFunction<U, U, U> uAccumulator) {
+        T tResult = identity1;
+        U uResult = identity2;
+        for (Pair<T, U> pair : pairStream.toList()) {
+            tResult = tAccumulator.apply(tResult, pair.left);
+            uResult = uAccumulator.apply(uResult, pair.right);
+        }
+        return new Pair<>(tResult, uResult);
     }
 
     @Override
-    public Optional<Pair<T, U>> reduce(BiFunction<T, U, Pair<T, U>> accumulator) {
-        return Optional.empty();
+    public Optional<Pair<T, U>> reduce(BiFunction<T, T, T> tAccumulator, BiFunction<U, U, U> uAccumulator) {
+        boolean foundAny = false;
+        T tResult = null;
+        U uResult = null;
+        for (Pair<T, U> element : pairStream.toList()) {
+            if (!foundAny) {
+                foundAny = true;
+                tResult = element.left;
+                uResult = element.right;
+            } else {
+                tResult = tAccumulator.apply(tResult, element.left);
+                uResult = uAccumulator.apply(uResult, element.right);
+            }
+
+        }
+        return foundAny ? Optional.of(new Pair<>(tResult, uResult)) : Optional.empty();
     }
 
     @Override
     public <R> R collect(Supplier<R> supplier, BiConsumer<R, ? super T> accumulator, BiConsumer<R, R> combiner) {
-        return null;
+        throw new RuntimeException("Not Implemented Yet");
     }
 
     @Override
     public <R, A> R collect(Collector<? super T, A, R> collector) {
-        return null;
+        throw new RuntimeException("Not Implemented Yet");
     }
 
     @Override
     public long count() {
-        return 0;
+        return pairStream.count();
     }
 
     @Override
     public boolean anyMatch(BiPredicate<? super T, ? super U> predicate) {
-        return false;
+        return pairStream.anyMatch(p -> predicate.test(p.left, p.right));
     }
 
     @Override
     public boolean allMatch(BiPredicate<? super T, ? super U> predicate) {
-        return false;
+        return pairStream.allMatch(p -> predicate.test(p.left, p.right));
     }
 
     @Override
     public boolean noneMatch(BiPredicate<? super T, ? super U> predicate) {
-        return false;
+        return pairStream.noneMatch(p -> predicate.test(p.left, p.right));
     }
 
     @Override
     public OptionalPair<T, U> findFirst() {
-        return null;
+        return pairStream.findFirst().map(tuPair -> new OptionalPair<>(tuPair.left, tuPair.right)).orElseGet(OptionalPair::empty);
     }
 
     @Override
     public OptionalPair<T, U> findAny() {
-        return null;
+        return pairStream.findAny().map(tuPair -> new OptionalPair<>(tuPair.left, tuPair.right)).orElseGet(OptionalPair::empty);
     }
 
-    public PairStream(T[] tData, U[] uData){
+    public PairStream(T[] tData, U[] uData) {
         Pair<T, U>[] pairs = new Pair[max(tData.length, uData.length)];
-        for(int i = 0; i < max(tData.length, uData.length); i++){
+        for (int i = 0; i < max(tData.length, uData.length); i++) {
             pairs[i] = new Pair<>(tData[i], uData[i]);
         }
         this.pairStream = Arrays.stream(pairs);
     }
 
-    public PairStream(List<T> tList, List<U> uList){
+    public PairStream(List<T> tList, List<U> uList) {
         Pair<T, U>[] pairs = new Pair[max(tList.size(), uList.size())];
-        for(int i = 0; i < max(tList.size(), uList.size()); i++){
+        for (int i = 0; i < max(tList.size(), uList.size()); i++) {
             pairs[i] = new Pair<>(tList.get(i), uList.get(i));
         }
         this.pairStream = Arrays.stream(pairs);
+    }
+
+    private PairStream(Stream<Pair<T, U>> pairStream) {
+        this.pairStream = pairStream;
     }
 
 

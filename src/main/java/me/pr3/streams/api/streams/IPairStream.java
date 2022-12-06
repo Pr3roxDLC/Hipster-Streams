@@ -59,9 +59,9 @@ public interface IPairStream<T, U> {
     <A> A[] toArray(IntFunction<A[]> generator);
 
     //TODO rethink this, there should be a better way to handle this?
-    Pair<T, U> reduce(T identity1, U identity2, BiFunction<T, U, Pair<T, U>> accumulator);
+    Pair<T, U> reduce(T identity1, U identity2, BiFunction<T, T, T> tAccumulator, BiFunction<U, U, U> uAccumulator);
 
-    Optional<Pair<T, U>> reduce(BiFunction<T, U, Pair<T, U>> accumulator);
+    Optional<Pair<T, U>> reduce(BiFunction<T, T, T> tAccumulator, BiFunction<U, U, U> uAccumulator);
 
     <R> R collect(Supplier<R> supplier, BiConsumer<R, ? super T> accumulator, BiConsumer<R, R> combiner);
 
