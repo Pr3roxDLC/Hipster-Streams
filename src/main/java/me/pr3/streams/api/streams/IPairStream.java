@@ -3,8 +3,8 @@ package me.pr3.streams.api.streams;
 import me.pr3.streams.api.functions.bi.BiToDoubleFunction;
 import me.pr3.streams.api.functions.bi.BiToIntFunction;
 import me.pr3.streams.api.functions.bi.BiToLongFunction;
-import me.pr3.streams.api.tupels.OptionalPair;
-import me.pr3.streams.api.tupels.Pair;
+import me.pr3.streams.impl.tupels.OptionalPair;
+import me.pr3.streams.impl.tupels.Pair;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,14 +14,14 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
-public interface PairStream<T, U> {
-    PairStream<T, U> filter(BiPredicate<? super T, ? super U> predicate);
+public interface IPairStream<T, U> {
+    IPairStream<T, U> filter(BiPredicate<? super T, ? super U> predicate);
 
-    <A, B> PairStream<A, B> mapSeparate(Function<? super T, ? extends A> mapperA, Function<? super U, ? extends B> mapperB);
+    <A, B> IPairStream<A, B> mapSeparate(Function<? super T, ? extends A> mapperA, Function<? super U, ? extends B> mapperB);
 
-    <A, B> PairStream<A, B> mapTogether(BiFunction<? super T, ? super U, A> aBiFunction, BiFunction<? super T, ? super U, B> bBiFunction);
+    <A, B> IPairStream<A, B> mapTogether(BiFunction<? super T, ? super U, A> aBiFunction, BiFunction<? super T, ? super U, B> bBiFunction);
 
-    <A> SingleStream<A> mapToSingle(BiFunction<T, U, A> biFunction);
+    <A> ISingleStream<A> mapToSingle(BiFunction<T, U, A> biFunction);
 
     IntStream mapToInt(BiToIntFunction<? super T, ? super U> mapper);
 
@@ -29,7 +29,7 @@ public interface PairStream<T, U> {
 
     DoubleStream mapToDouble(BiToDoubleFunction<? super T, ? super U> mapper);
 
-    <A, B> PairStream<A, B> flatMap(BiFunction<? super T, ? super U, ? extends PairStream<? extends A, ? extends B>> mapper);
+    <A, B> IPairStream<A, B> flatMap(BiFunction<? super T, ? super U, ? extends IPairStream<? extends A, ? extends B>> mapper);
 
     IntStream flatMapToInt(BiFunction<? super T, ? super U, ? extends IntStream> mapper);
 
@@ -37,18 +37,18 @@ public interface PairStream<T, U> {
 
     DoubleStream flatMapToDouble(BiFunction<? super T, ? super U, ? extends DoubleStream> mapper);
 
-    PairStream<T, U> distinct();
+    IPairStream<T, U> distinct();
 
-    PairStream<T, U> sorted();
+    IPairStream<T, U> sorted();
 
     //TODO write API for everything Comparator related, is a n-Comparator Needed?
     //IPairStream<T, U> sorted(Comparator<? super T> comparator);
 
-    PairStream<T, U> peek(BiConsumer<? super T, ? super U> action);
+    IPairStream<T, U> peek(BiConsumer<? super T, ? super U> action);
 
-    PairStream<T, U> limit(long maxSize);
+    IPairStream<T, U> limit(long maxSize);
 
-    PairStream<T, U> skip(long n);
+    IPairStream<T, U> skip(long n);
 
     void forEach(BiConsumer<? super T, ? super U> action);
 

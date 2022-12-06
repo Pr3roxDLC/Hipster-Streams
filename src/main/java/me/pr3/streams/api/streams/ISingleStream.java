@@ -4,12 +4,12 @@ import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
 
-public interface SingleStream<T>{
-    SingleStream<T> filter(Predicate<? super T> predicate);
+public interface ISingleStream<T>{
+    ISingleStream<T> filter(Predicate<? super T> predicate);
 
-    <R> SingleStream<R> map(Function<? super T, ? extends R> mapper);
+    <R> ISingleStream<R> map(Function<? super T, ? extends R> mapper);
 
-    <A, B> PairStream<A,B> mapToPair(Function<? super T, A> aFunction, Function<? super T, B> bFunction);
+    <A, B> IPairStream<A,B> mapToPair(Function<? super T, A> aFunction, Function<? super T, B> bFunction);
 
     IntStream mapToInt(ToIntFunction<? super T> mapper);
 
@@ -17,7 +17,7 @@ public interface SingleStream<T>{
 
     DoubleStream mapToDouble(ToDoubleFunction<? super T> mapper);
 
-    <R> SingleStream<R> flatMap(Function<? super T, ? extends SingleStream<? extends R>> mapper);
+    <R> ISingleStream<R> flatMap(Function<? super T, ? extends Stream<? extends R>> mapper);
 
     IntStream flatMapToInt(Function<? super T, ? extends IntStream> mapper);
 
@@ -25,17 +25,17 @@ public interface SingleStream<T>{
 
     DoubleStream flatMapToDouble(Function<? super T, ? extends DoubleStream> mapper);
 
-    SingleStream<T> distinct();
+    ISingleStream<T> distinct();
 
-    SingleStream<T> sorted();
+    ISingleStream<T> sorted();
 
-    SingleStream<T> sorted(Comparator<? super T> comparator);
+    ISingleStream<T> sorted(Comparator<? super T> comparator);
 
-    SingleStream<T> peek(Consumer<? super T> action);
+    ISingleStream<T> peek(Consumer<? super T> action);
 
-    SingleStream<T> limit(long maxSize);
+    ISingleStream<T> limit(long maxSize);
 
-    SingleStream<T> skip(long n);
+    ISingleStream<T> skip(long n);
 
     void forEach(Consumer<? super T> action);
 
@@ -74,8 +74,9 @@ public interface SingleStream<T>{
 
     Optional<T> findAny();
 
-    public static<T> Stream<T> of(T... values) {
-        return Arrays.stream(values);
+    @SafeVarargs
+    public static<T> ISingleStream<T> of(T... values) {
+        return new me.pr3.streams.impl.SingleStream<>(values);
     }
 
 }
