@@ -107,8 +107,8 @@ public class SingleStream<T> implements ISingleStream<T> {
     }
 
     @Override
-    public Object[] toArray() {
-        return stream.toArray();
+    public T[] toArray() {
+        return (T[]) stream.toList().toArray(new Object[0]);
     }
 
     @Override

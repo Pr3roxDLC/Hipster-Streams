@@ -41,7 +41,7 @@ public interface ISingleStream<T>{
 
     void forEachOrdered(Consumer<? super T> action);
 
-    Object[] toArray();
+    T[] toArray();
 
     <A> A[] toArray(IntFunction<A[]> generator);
 

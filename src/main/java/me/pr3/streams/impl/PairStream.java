@@ -125,7 +125,7 @@ public class PairStream<T, U> implements IPairStream<T, U> {
 
     @Override
     public Pair<T, U>[] toArray() {
-        return (Pair<T, U>[]) pairStream.toArray();
+       return pairStream.toList().toArray(new Pair[0]);
     }
 
     @Override
