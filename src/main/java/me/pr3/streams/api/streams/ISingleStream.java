@@ -53,9 +53,8 @@ public interface ISingleStream<T>{
 
     <R, A> R collect(Collector<? super T, A, R> collector);
 
-    @SuppressWarnings("unchecked")
     default List<T> toList() {
-        return (List<T>) List.of(this.toArray());
+        return List.of(this.toArray());
     }
 
     Optional<T> min(Comparator<? super T> comparator);

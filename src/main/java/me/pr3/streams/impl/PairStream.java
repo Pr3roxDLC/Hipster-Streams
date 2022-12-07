@@ -1,6 +1,5 @@
 package me.pr3.streams.impl;
 
-import jdk.jshell.spi.ExecutionControl;
 import me.pr3.streams.api.functions.bi.BiComparator;
 import me.pr3.streams.api.functions.bi.BiToDoubleFunction;
 import me.pr3.streams.api.functions.bi.BiToIntFunction;
@@ -11,14 +10,15 @@ import me.pr3.streams.impl.tupels.OptionalPair;
 import me.pr3.streams.impl.tupels.Pair;
 import org.apache.commons.collections4.ListUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.*;
 import java.util.stream.*;
 
-import static java.lang.Math.max;
-
 public class PairStream<T, U> implements IPairStream<T, U> {
-    private Stream<Pair<T, U>> pairStream;
+    private final Stream<Pair<T, U>> pairStream;
 
 
     @Override
@@ -123,6 +123,7 @@ public class PairStream<T, U> implements IPairStream<T, U> {
         pairStream.forEachOrdered(p -> action.accept(p.left, p.right));
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Pair<T, U>[] toArray() {
        return pairStream.toList().toArray(new Pair[0]);
@@ -247,15 +248,7 @@ public class PairStream<T, U> implements IPairStream<T, U> {
         return new PairStream<>(tLists, uLists);
     }
 
-
-    public PairStream(T[] tData, U[] uData) {
-        Pair<T, U>[] pairs = new Pair[Math.max(tData.length, uData.length)];
-        for (int i = 0; i < Math.max(tData.length, uData.length); i++) {
-            pairs[i] = new Pair<>(tData[i], uData[i]);
-        }
-        this.pairStream = Arrays.stream(pairs);
-    }
-
+    @SuppressWarnings("unchecked")
     public PairStream(List<T> tList, List<U> uList) {
         Pair<T, U>[] pairs = new Pair[Math.max(tList.size(), uList.size())];
         for (int i = 0; i < Math.max(tList.size(), uList.size()); i++) {

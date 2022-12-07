@@ -12,12 +12,12 @@ public class SingleStream<T> implements ISingleStream<T> {
     private final Stream<T> stream;
     @Override
     public ISingleStream<T> filter(Predicate<? super T> predicate) {
-        return new SingleStream<T>(stream.filter(predicate));
+        return new SingleStream<>(stream.filter(predicate));
     }
 
     @Override
     public <R> ISingleStream<R> map(Function<? super T, ? extends R> mapper) {
-        return new SingleStream<R>(stream.map(mapper));
+        return new SingleStream<>(stream.map(mapper));
     }
 
     @Override
@@ -28,7 +28,7 @@ public class SingleStream<T> implements ISingleStream<T> {
             aList.add(aFunction.apply(t));
             bList.add(bFunction.apply(t));
         });
-        return new PairStream<A,B>(aList,bList);
+        return new PairStream<>(aList, bList);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class SingleStream<T> implements ISingleStream<T> {
 
     @Override
     public <R> ISingleStream<R> flatMap(Function<? super T, ? extends Stream<? extends R>> mapper) {
-        return new SingleStream<R>(stream.flatMap(mapper));
+        return new SingleStream<>(stream.flatMap(mapper));
     }
 
     @Override
@@ -68,32 +68,32 @@ public class SingleStream<T> implements ISingleStream<T> {
 
     @Override
     public ISingleStream<T> distinct() {
-        return new SingleStream<T>(stream.distinct());
+        return new SingleStream<>(stream.distinct());
     }
 
     @Override
     public ISingleStream<T> sorted() {
-        return new SingleStream<T>(stream.sorted());
+        return new SingleStream<>(stream.sorted());
     }
 
     @Override
     public ISingleStream<T> sorted(Comparator<? super T> comparator) {
-        return new SingleStream<T>(stream.sorted(comparator));
+        return new SingleStream<>(stream.sorted(comparator));
     }
 
     @Override
     public ISingleStream<T> peek(Consumer<? super T> action) {
-        return new SingleStream<T>(stream.peek(action));
+        return new SingleStream<>(stream.peek(action));
     }
 
     @Override
     public ISingleStream<T> limit(long maxSize) {
-        return new SingleStream<T>(stream.limit(maxSize));
+        return new SingleStream<>(stream.limit(maxSize));
     }
 
     @Override
     public ISingleStream<T> skip(long n) {
-        return new SingleStream<T>(stream.skip(n));
+        return new SingleStream<>(stream.skip(n));
     }
 
     @Override
@@ -106,6 +106,7 @@ public class SingleStream<T> implements ISingleStream<T> {
         stream.forEachOrdered(action);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public T[] toArray() {
         return (T[]) stream.toList().toArray(new Object[0]);

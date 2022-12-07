@@ -7,8 +7,6 @@ import me.pr3.streams.api.functions.bi.BiToLongFunction;
 import me.pr3.streams.impl.tupels.OptionalPair;
 import me.pr3.streams.impl.tupels.Pair;
 
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.*;
@@ -70,9 +68,8 @@ public interface IPairStream<T, U> {
 
     <R, A> R collect(Collector<? super T, A, R> collector);
 
-    @SuppressWarnings("unchecked")
     default List<Pair<T, U>> toList() {
-        return (List<Pair<T, U>>) List.of(this.toArray());
+        return List.of(this.toArray());
     }
 
     OptionalPair<T, U> min(BiComparator<? super T, ? super U> comparator);
