@@ -172,6 +172,7 @@ public class PairStream<T, U> implements IPairStream<T, U> {
         return container;
     }
 
+    //TODO implement this
     @Override
     public <R, A> R collect(Collector<? super T, A, R> collector) {
         throw new RuntimeException("Not Implemented Yet");
