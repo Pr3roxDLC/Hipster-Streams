@@ -1,12 +1,13 @@
 package me.pr3.streams.impl.tupels;
 
+import me.pr3.streams.impl.PairStream;
+import me.pr3.streams.impl.SingleStream;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.Stream;
 
 public class OptionalPair<T, U> {
     private static final OptionalPair<?, ?> EMPTY = new OptionalPair<>(null, null);
@@ -30,6 +31,12 @@ public class OptionalPair<T, U> {
         return new OptionalPair<>(value1, value2);
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T, U> OptionalPair<T, U> ofNullable(T value1, U value2) {
+        return value1 == null || value2 == null ? (OptionalPair<T, U>) EMPTY
+                : new OptionalPair<>(value1, value2);
+    }
+
     public Pair<T, U> get() {
         if (value1 == null || value2 == null) {
             throw new NoSuchElementException("No value present");
@@ -37,111 +44,89 @@ public class OptionalPair<T, U> {
         return new Pair<>(value1, value2);
     }
 
-    public boolean areBothPresent() {
-        return value1 != null && value2 != null;
+
+    public boolean isPresent(){
+        return value1!=null||value2!=null;
     }
 
-    public boolean isAtLeastOnePresent() {
-        return value1 != null || value2 != null;
+    public boolean isEmpty(){
+        return !isPresent();
     }
 
-    public boolean isNonePresent() {
-        return value1 == null && value2 == null;
-    }
-
-    public boolean isExactlyOnePresent() {
-        return value1 == null ^ value2 == null;
-    }
-
-    public void ifBothArePresent(BiConsumer<? super T, ? super U> action) {
+    public void ifPresent(BiConsumer<? super T, ? super U> action) {
         if (value1 != null && value2 != null) {
             action.accept(value1, value2);
         }
     }
 
-    public void ifNoneArePresent(Runnable runnable) {
-        if (value1 == null && value2 == null) {
-            runnable.run();
+    public void ifPresentOrElse(BiConsumer<? super T, ? super U> action, Runnable emptyAction) {
+        if (value1 != null && value2 != null) {
+            action.accept(value1, value2);
+        } else {
+            emptyAction.run();
         }
     }
 
-    public OptionalPair<T, U> orIfNoneArePresent(Supplier<? extends OptionalPair<? extends T, ? extends U>> supplier) {
-        Objects.requireNonNull(supplier);
-        if (areBothPresent()) {
+    public OptionalPair<T, U> filter(BiPredicate<? super T, ? super U> predicate) {
+        Objects.requireNonNull(predicate);
+        if (!isPresent()) {
             return this;
         } else {
-            @SuppressWarnings("unchecked")
-            OptionalPair<T, U> r = (OptionalPair<T, U>) supplier.get();
-            return Objects.requireNonNull(r);
+            return predicate.test(value1, value2) ? this : empty();
         }
     }
 
-    public OptionalPair<T, U> orIfExactlyOneIsPresent(Supplier<? extends OptionalPair<? extends T, ? extends U>> supplier) {
-        Objects.requireNonNull(supplier);
-        if (isExactlyOnePresent()) {
+    public <R, S> OptionalPair<R, S> map(Function<? super T, ? extends R> mapper1, Function<? super U, ? extends S> mapper2) {
+        Objects.requireNonNull(mapper1);
+        Objects.requireNonNull(mapper2);
+        if (!isPresent()) {
+            return empty();
+        } else {
+            return OptionalPair.ofNullable(mapper1.apply(value1), mapper2.apply(value2));
+        }
+    }
+
+    public OptionalPair<T, U> or(Supplier<? extends T> supplier1, Supplier<? extends U> supplier2) {
+        Objects.requireNonNull(supplier1);
+        Objects.requireNonNull(supplier2);
+        if (isPresent()) {
             return this;
         } else {
-            @SuppressWarnings("unchecked")
-            OptionalPair<T, U> r = (OptionalPair<T, U>) supplier.get();
-            return Objects.requireNonNull(r);
+            return new OptionalPair<T, U>(Objects.requireNonNull(supplier1.get()), Objects.requireNonNull(supplier2.get()));
         }
     }
 
-    public OptionalPair<T, U> orIfAtLeastOneIsPresent(Supplier<? extends OptionalPair<? extends T, ? extends U>> supplier) {
-        Objects.requireNonNull(supplier);
-        if (isAtLeastOnePresent()) {
-            return this;
+    public PairStream<T, U> stream() {
+        if (!isPresent()) {
+            return PairStream.empty();
         } else {
-            @SuppressWarnings("unchecked")
-            OptionalPair<T, U> r = (OptionalPair<T, U>) supplier.get();
-            return Objects.requireNonNull(r);
+            return PairStream.of(List.of(value1), List.of(value2));
         }
     }
 
-    public Pair<T, U> orElseThrowIfBothAreNull() {
-        if (value1 == null && value2 == null) {
-            throw new NoSuchElementException("No value present");
-        }
-        return new Pair<>(value1, value2);
+    public Pair<T,U> orElse(T otherT, U otherU) {
+        return value1 != null && value2 != null ? new Pair<>(value1, value2) : new Pair<>(otherT, otherU);
     }
 
-    public Pair<T, U> orElseThrowIfExactlyOneIsNull() {
-        if (value1 == null ^ value2 == null) {
-            throw new NoSuchElementException("No value present");
-        }
-        return new Pair<>(value1, value2);
+    public Pair<T,U> orElseGet(Supplier<? extends T> supplier1, Supplier<? extends U> supplier2) {
+        return value1 != null && value2 != null ? new Pair<>(value1, value2) : new Pair<>(supplier1.get(), supplier2.get());
     }
 
-    public Pair<T, U> orElseThrowIfAtLeastOneIsNull() {
+    public Pair<T,U> orElseThrow() {
         if (value1 == null || value2 == null) {
             throw new NoSuchElementException("No value present");
         }
         return new Pair<>(value1, value2);
     }
 
-    public <X extends Throwable> Pair<T, U> orElseThrowIfBothAreNull(Supplier<? extends X> exceptionSupplier) throws X {
-        if (value1 != null || value2 != null) {
-            return new Pair<>(value1, value2);
-        } else {
-            throw exceptionSupplier.get();
-        }
-    }
-
-    public <X extends Throwable> Pair<T, U> orElseThrowIfExactlyOneIsNull(Supplier<? extends X> exceptionSupplier) throws X {
-        if ((value1 == null) == (value2 == null)) {
-            return new Pair<>(value1, value2);
-        } else {
-            throw exceptionSupplier.get();
-        }
-    }
-
-    public <X extends Throwable> Pair<T, U> orElseThrowIfAtLeastOneIsNull(Supplier<? extends X> exceptionSupplier) throws X {
+    public <X extends Throwable> Pair<T,U> orElseThrow(Supplier<? extends X> exceptionSupplier) throws X {
         if (value1 != null && value2 != null) {
             return new Pair<>(value1, value2);
         } else {
             throw exceptionSupplier.get();
         }
     }
+
 
     @Override
     public boolean equals(Object obj) {

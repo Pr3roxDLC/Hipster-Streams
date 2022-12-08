@@ -10,10 +10,7 @@ import me.pr3.streams.impl.tupels.OptionalPair;
 import me.pr3.streams.impl.tupels.Pair;
 import org.apache.commons.collections4.ListUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
 
@@ -233,6 +230,14 @@ public class PairStream<T, U> implements IPairStream<T, U> {
     @Override
     public OptionalPair<T, U> findAny() {
         return pairStream.findAny().map(tuPair -> new OptionalPair<>(tuPair.left, tuPair.right)).orElseGet(OptionalPair::empty);
+    }
+
+    public static <T,U> PairStream<T,U> empty(){
+        return new PairStream<>(Stream.empty());
+    }
+
+    public static <T,U> PairStream<T,U> of(List<T> tList, List<U> uList){
+        return new PairStream<T,U>(tList, uList);
     }
 
     @Override
