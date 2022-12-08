@@ -80,7 +80,7 @@ public class OptionalPair<T, U> {
         }
     }
 
-    public <R, S> OptionalPair<R, S> map(Function<? super T, ? extends R> mapper1, Function<? super U, ? extends S> mapper2) {
+    public <R, S> OptionalPair<R, S> mapSeparate(Function<? super T, ? extends R> mapper1, Function<? super U, ? extends S> mapper2) {
         Objects.requireNonNull(mapper1);
         Objects.requireNonNull(mapper2);
         if (!isPresent()) {
