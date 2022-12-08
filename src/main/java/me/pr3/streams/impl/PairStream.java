@@ -144,7 +144,7 @@ public class PairStream<T, U> implements IPairStream<T, U> {
     }
 
     @Override
-    public Optional<Pair<T, U>> reduce(BiFunction<T, T, T> tAccumulator, BiFunction<U, U, U> uAccumulator) {
+    public OptionalPair<T, U> reduce(BiFunction<T, T, T> tAccumulator, BiFunction<U, U, U> uAccumulator) {
         boolean foundAny = false;
         T tResult = null;
         U uResult = null;
@@ -159,7 +159,7 @@ public class PairStream<T, U> implements IPairStream<T, U> {
             }
 
         }
-        return foundAny ? Optional.of(new Pair<>(tResult, uResult)) : Optional.empty();
+        return foundAny ? OptionalPair.of(tResult, uResult) : OptionalPair.empty();
     }
 
     @Override

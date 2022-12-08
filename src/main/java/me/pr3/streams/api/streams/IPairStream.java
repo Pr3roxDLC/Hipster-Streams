@@ -8,7 +8,6 @@ import me.pr3.streams.impl.tupels.OptionalPair;
 import me.pr3.streams.impl.tupels.Pair;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.*;
 import java.util.stream.Collector;
 import java.util.stream.DoubleStream;
@@ -62,7 +61,7 @@ public interface IPairStream<T, U> {
     //TODO rethink this, there should be a better way to handle this?
     Pair<T, U> reduce(T identity1, U identity2, BiFunction<T, T, T> tAccumulator, BiFunction<U, U, U> uAccumulator);
 
-    Optional<Pair<T, U>> reduce(BiFunction<T, T, T> tAccumulator, BiFunction<U, U, U> uAccumulator);
+    OptionalPair<T, U> reduce(BiFunction<T, T, T> tAccumulator, BiFunction<U, U, U> uAccumulator);
 
     <R> R collect(Supplier<R> supplier, BiConsumer<R, ? super T> aAccumulator, BiConsumer<R, ? super U> uAccumulator);
 
