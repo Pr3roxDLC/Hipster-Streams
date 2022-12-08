@@ -45,7 +45,7 @@ public interface ITripletStream <T, U, V> {
 
     ITripletStream<T, U, V> sorted();
 
-    //TODO write API for everything Comparator related, is a n-Comparator Needed?
+    //TODO write API for everything Comparator related, is an n-Comparator Needed?
     //IPairStream<T, U> sorted(Comparator<? super T> comparator);
 
     ITripletStream<T, U, V> peek(TriConsumer<? super T, ? super U, ? super V> action);

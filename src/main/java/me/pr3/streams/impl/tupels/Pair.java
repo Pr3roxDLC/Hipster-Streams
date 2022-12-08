@@ -3,8 +3,8 @@ package me.pr3.streams.impl.tupels;
 import java.util.Objects;
 
 public class Pair <T,U>{
-    public T left;
-    public U right;
+    public final T left;
+    public final U right;
     public Pair(T left, U right){
         this.left = left;
         this.right = right;

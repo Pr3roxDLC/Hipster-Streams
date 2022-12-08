@@ -12,9 +12,9 @@ import java.util.function.Supplier;
 
 public class OptionalTriplet <T,U,V>{
 
-    private T value1;
-    private U value2;
-    private V value3;
+    private final T value1;
+    private final U value2;
+    private final V value3;
     private static final OptionalTriplet<?, ?, ?> EMPTY = new OptionalTriplet<>(null, null, null);
     public OptionalTriplet(T value1, U value2, V value3) {
         this.value1 = value1;

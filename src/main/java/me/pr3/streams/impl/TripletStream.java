@@ -25,7 +25,7 @@ public class TripletStream<T, U, V> implements ITripletStream<T, U, V> {
 
     @Override
     public <A, B, C> ITripletStream<A, B, C> mapSeparate(Function<? super T, ? extends A> mapperA, Function<? super U, ? extends B> mapperB, Function<? super V, ? extends C> mapperC) {
-        return new TripletStream<>(tripletStream.map(t -> new Triplet<A, B, C>(mapperA.apply(t.left), mapperB.apply(t.middle), mapperC.apply(t.right))));
+        return new TripletStream<>(tripletStream.map(t -> new Triplet<>(mapperA.apply(t.left), mapperB.apply(t.middle), mapperC.apply(t.right))));
     }
 
     @Override
@@ -39,7 +39,7 @@ public class TripletStream<T, U, V> implements ITripletStream<T, U, V> {
 
     @Override
     public <A> ISingleStream<A> mapToSingle(TriFunction<T, U, V, A> triFunction) {
-        return new SingleStream<A>(tripletStream.map(t -> triFunction.apply(t.left, t.middle, t.right)).toList());
+        return new SingleStream<>(tripletStream.map(t -> triFunction.apply(t.left, t.middle, t.right)).toList());
     }
 
     @Override
@@ -267,6 +267,7 @@ public class TripletStream<T, U, V> implements ITripletStream<T, U, V> {
         this.tripletStream = stream;
     }
 
+    @SuppressWarnings("unchecked")
     public TripletStream(List<T> tList, List<U> uList, List<V> vList) {
         Triplet<T, U, V>[] triplets = new Triplet[IntStream.of(tList.size(), uList.size(), vList.size()).max().orElse(0)];
         for (int i = 0; i < IntStream.of(tList.size(), uList.size(), vList.size()).max().orElse(0); i++) {

@@ -3,9 +3,9 @@ package me.pr3.streams.impl.tupels;
 import java.util.Objects;
 
 public class Triplet<T,U,V>{
-    public T left;
-    public U middle;
-    public V right;
+    public final T left;
+    public final U middle;
+    public final V right;
 
 
     public Triplet(T left, U middle, V right) {
