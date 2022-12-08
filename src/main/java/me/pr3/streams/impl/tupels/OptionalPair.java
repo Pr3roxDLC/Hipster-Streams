@@ -1,14 +1,18 @@
 package me.pr3.streams.impl.tupels;
 
 import me.pr3.streams.impl.PairStream;
-import me.pr3.streams.impl.SingleStream;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
-import java.util.function.*;
-import java.util.stream.Stream;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
+@SuppressWarnings("unused")
 public class OptionalPair<T, U> {
     private static final OptionalPair<?, ?> EMPTY = new OptionalPair<>(null, null);
 
@@ -92,7 +96,7 @@ public class OptionalPair<T, U> {
         if (isPresent()) {
             return this;
         } else {
-            return new OptionalPair<T, U>(Objects.requireNonNull(supplier1.get()), Objects.requireNonNull(supplier2.get()));
+            return new OptionalPair<>(Objects.requireNonNull(supplier1.get()), Objects.requireNonNull(supplier2.get()));
         }
     }
 

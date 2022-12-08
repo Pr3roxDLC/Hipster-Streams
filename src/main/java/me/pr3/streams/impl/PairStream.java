@@ -14,6 +14,7 @@ import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
 
+@SuppressWarnings("unused")
 public class PairStream<T, U> implements IPairStream<T, U> {
     private final Stream<Pair<T, U>> pairStream;
 
@@ -237,7 +238,7 @@ public class PairStream<T, U> implements IPairStream<T, U> {
     }
 
     public static <T,U> PairStream<T,U> of(List<T> tList, List<U> uList){
-        return new PairStream<T,U>(tList, uList);
+        return new PairStream<>(tList, uList);
     }
 
     @Override
