@@ -29,7 +29,7 @@ public interface IPairStream<T, U> {
 
     DoubleStream mapToDouble(BiToDoubleFunction<? super T, ? super U> mapper);
 
-    <A, B> IPairStream<A, B> flatMap(BiFunction<? super T, ? super U, ? extends IPairStream<? extends A, ? extends B>> mapper);
+    <A, B> IPairStream<A, B> flatMap(BiFunction<? super T, ? super U, ? extends IPairStream<A,B>> mapper);
 
     IntStream flatMapToInt(BiFunction<? super T, ? super U, ? extends IntStream> mapper);
 

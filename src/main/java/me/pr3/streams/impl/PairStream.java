@@ -67,8 +67,8 @@ public class PairStream<T, U> implements IPairStream<T, U> {
     }
 
     @Override
-    public <A, B> IPairStream<A, B> flatMap(BiFunction<? super T, ? super U, ? extends IPairStream<? extends A, ? extends B>> mapper) {
-        throw new RuntimeException("Not Implemented");
+    public <A, B> IPairStream<A, B> flatMap(BiFunction<? super T, ? super U, ? extends IPairStream<A,B>> mapper) {
+        return new PairStream<>(pairStream.flatMap(t -> mapper.apply(t.left, t.right).toList().stream()));
     }
 
     @Override
