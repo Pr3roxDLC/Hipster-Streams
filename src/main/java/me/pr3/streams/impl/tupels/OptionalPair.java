@@ -7,10 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.function.BiConsumer;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 @SuppressWarnings("unused")
 public class OptionalPair<T, U> {
@@ -87,6 +84,15 @@ public class OptionalPair<T, U> {
             return empty();
         } else {
             return OptionalPair.ofNullable(mapper1.apply(value1), mapper2.apply(value2));
+        }
+    }
+
+    public <R, S> OptionalPair<R, S> mapTogether(BiFunction<? super T, ? super U, OptionalPair<R,S>> mapper1) {
+        Objects.requireNonNull(mapper1);
+        if (!isPresent()) {
+            return empty();
+        } else {
+            return mapper1.apply(value1, value2);
         }
     }
 
