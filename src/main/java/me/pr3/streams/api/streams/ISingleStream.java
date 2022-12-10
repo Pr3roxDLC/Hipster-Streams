@@ -11,6 +11,8 @@ public interface ISingleStream<T>{
 
     <A, B> IPairStream<A,B> mapToPair(Function<? super T, A> aFunction, Function<? super T, B> bFunction);
 
+    <A, B, C> ITripletStream<A,B, C> mapToTriplet(Function<? super T, A> aFunction, Function<? super T, B> bFunction, Function<? super T, C> cFunction);
+
     IntStream mapToInt(ToIntFunction<? super T> mapper);
 
     LongStream mapToLong(ToLongFunction<? super T> mapper);

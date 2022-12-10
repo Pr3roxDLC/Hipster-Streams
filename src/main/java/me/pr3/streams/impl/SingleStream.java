@@ -2,6 +2,7 @@ package me.pr3.streams.impl;
 
 import me.pr3.streams.api.streams.IPairStream;
 import me.pr3.streams.api.streams.ISingleStream;
+import me.pr3.streams.api.streams.ITripletStream;
 import org.apache.commons.collections4.ListUtils;
 
 import java.util.*;
@@ -29,6 +30,19 @@ public class SingleStream<T> implements ISingleStream<T> {
             bList.add(bFunction.apply(t));
         });
         return new PairStream<>(aList, bList);
+    }
+
+    @Override
+    public <A, B, C> ITripletStream<A, B, C> mapToTriplet(Function<? super T, A> aFunction, Function<? super T, B> bFunction, Function<? super T, C> cFunction) {
+        List<A> aList = new ArrayList<>();
+        List<B> bList = new ArrayList<>();
+        List<C> cList = new ArrayList<>();
+        stream.forEach(t ->{
+            aList.add(aFunction.apply(t));
+            bList.add(bFunction.apply(t));
+            cList.add(cFunction.apply(t));
+        });
+        return new TripletStream<>(aList, bList, cList);
     }
 
     @Override
